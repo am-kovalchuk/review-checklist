@@ -1,0 +1,5 @@
+Resources
+| where type == "microsoft.containerregistry/registries"
+| extend managedIdentityForPullPush = tostring(properties.acrUseManagedIdentityCreds)
+| where managedIdentityForPullPush == "true"
+| project name, resourceGroup, subscriptionId, location, managedIdentityForPullPush

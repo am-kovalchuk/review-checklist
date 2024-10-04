@@ -116,7 +116,7 @@
         },
         {
             "arm-service": "microsoft.containerregistry/registries",
-            "graph": "resources | where type == 'microsoft.containerregistry/registries' | extend compliant = properties.policies.trustPolicy.type != 'ArmAudience' | distinct id, compliant",
+            "graph": "resources | where type == 'microsoft.containerregistry/registries' | extend compliant = properties['policies']['azureADAuthenticationAsArmPolicy']['status'] == 'enabled' | distinct ['id'], compliant",
             "checklist": "Azure Container Registry Security Review",
             "description": "Only tokens with an ACR audience can be used for authentication. Used when enabling Conditional access policies for ACR",
             "guid": "3a041fd3-2947-498b-8288-b3c6a56ceb54",
