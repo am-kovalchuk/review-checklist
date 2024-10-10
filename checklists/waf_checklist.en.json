@@ -992,6 +992,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
+            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend compliant = tostring(properties.isZoneRedundant == 'true')  | distinct id, compliant",
             "guid": "de39ac0e-7c28-4dc9-9565-7202bff4564b",
             "link": "https://learn.microsoft.com/azure/cosmos-db/high-availability#slas",
             "service": "CosmosDB",
@@ -1002,6 +1003,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
+            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend replicationCount = array_length(properties.replication) | extend isProduction = properties.tags['Environment'] =~ 'production' | extend compliant = replicationCount > 1 and isProduction | distinct id, compliant",
             "guid": "0d934a34-8b26-43e7-bd60-513a3649906e",
             "link": "https://learn.microsoft.com/azure/cosmos-db/high-availability#replica-outages",
             "service": "CosmosDB",
@@ -1012,6 +1014,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
+            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend multiRegionWriteEnabled = tostring(properties.enableMultipleWriteLocations) | extend compliant = multiRegionWriteEnabled == 'true' | distinct id, compliant ",
             "description": "Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe",
             "guid": "bad38ead-53cc-47de-8d8a-aab3571449ab",
             "link": "https://learn.microsoft.com/azure/cosmos-db/high-availability#multiple-write-regions",
@@ -1023,6 +1026,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
+            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend regionCount = array_length(properties.locations) | extend multiRegionWriteEnabled = tostring(properties.enableMultipleWriteLocations) | extend compliant = (regionCount > 1 and multiRegionWriteEnabled == 'true') | distinct id, compliant ",
             "description": "Span Cosmos account across two or more regions with multi-region writes",
             "guid": "8153d89f-89dc-47b3-9be2-b1a27f7b9e91",
             "link": "https://learn.microsoft.com/azure/cosmos-db/high-availability#slas",
@@ -1045,6 +1049,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
+            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend serviceManagedFailoverEnabled = tostring(properties.enableAutomaticFailover) | extend compliant = serviceManagedFailoverEnabled == 'true' | distinct id, compliant",
             "description": "Maintain business continuity during regional outages. Azure Cosmos DB supports service-managed failover during a regional outage. During a regional outage, Azure Cosmos DB continues to maintain its latency, availability, consistency, and throughput SLAs. To help make sure that your entire application is highly available, Azure Cosmos DB offers a manual failover API to simulate a regional outage. By using this API, you can carry out regular business continuity drills.",
             "guid": "a47e4d1e-bb79-43f9-bf87-69e1032b72fe",
             "link": "https://learn.microsoft.com/azure/cosmos-db/how-to-manage-database-account#automatic-failover",
@@ -1056,6 +1061,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
+            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend automaticBackupsEnabled = tostring(properties.enableAutomaticBackup) | extend compliant = automaticBackupsEnabled == 'true' | distinct id, compliant",
             "description": "Azure Cosmos DB automatically takes backups of your data at regular intervals. The automatic backups are taken without affecting the performance or availability of the database operations. All the backups are stored separately in a storage service.",
             "guid": "3499c9c1-133d-42f7-a4b1-a5bd06ff1a90",
             "link": "https://learn.microsoft.com/azure/cosmos-db/online-backup-and-restore",
@@ -1068,6 +1074,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
+            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend periodicBackupEnabled = tostring(properties.enablePeriodicBackup) | extend compliant = periodicBackupEnabled == 'true' | distinct id, compliant",
             "description": "This mode is the default backup mode for all existing accounts. In this mode, backup is taken at a periodic interval and the data is restored by creating a request with the support team. In this mode, you configure a backup interval and retention for your account. The maximum retention period extends to a month. The minimum backup interval can be one hour.",
             "guid": "a6eb33f6-005c-4d92-9286-7655672d6121",
             "link": "https://learn.microsoft.com/azure/cosmos-db/periodic-backup-restore-introduction",
@@ -1080,6 +1087,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
+            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend continuousBackupEnabled = tostring(properties.enableContinuousBackup) | extend compliant = continuousBackupEnabled == 'true' | distinct id, compliant",
             "description": "Continous 7 day retention and 30 day retention backups. Azure Cosmos DB performs data backup in the background without consuming any extra provisioned throughput (RUs) or affecting the performance and availability of your database. Continuous backups are taken in every region where the account exists.",
             "guid": "d43918a8-cd28-49be-b6b1-7cb8245461e1",
             "link": "https://learn.microsoft.com/azure/cosmos-db/continuous-backup-restore-introduction",
@@ -4512,6 +4520,7 @@
         {
             "checklist": "Azure Landing Zone Review",
             "guid": "70c15989-c726-42c7-b0d3-24b7375b9201",
+            "graph":"resources | where type =~ 'microsoft.aad/tenants' | summarize tenantCount = count() | extend compliant = tenantCount == 1 | distinct tenantCount, compliant",
             "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/multi-tenant/considerations-recommendations",
             "service": "Entra",
             "severity": "Medium",
@@ -4522,6 +4531,7 @@
         {
             "checklist": "Azure Landing Zone Review",
             "guid": "6309957b-821a-43d1-b9d9-7fcf1802b747",
+            "graph":"resources | where type =~ 'microsoft.aad/tenants' | extend automationApproach = tostring(properties.automationApproach) | extend compliant = automationApproach == 'multi-tenant' | distinct id, compliant",
             "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/multi-tenant/automation",
             "service": "Entra",
             "severity": "Low",
@@ -4562,6 +4572,7 @@
         {
             "checklist": "Azure Landing Zone Review",
             "guid": "12e7f983-f630-4472-8dd6-9c5b5c2622f5",
+            "graph":"resources | where type =~ 'microsoft.aad/users' | extend authType = tostring(properties.accountEnabled) | extend compliant = authType == 'true' and not(tostring(properties.userType) == 'Guest') | distinct id, compliant",
             "link": "https://learn.microsoft.com/azure/active-directory/roles/security-planning#identify-microsoft-accounts-in-administrative-roles-that-need-to-be-switched-to-work-or-school-accounts",
             "service": "Entra",
             "severity": "Medium",
@@ -4621,7 +4632,7 @@
         },
         {
             "checklist": "Azure Landing Zone Review",
-            "graph": "resources | where type == 'microsoft.aad/domainservices' | extend replicaSets = properties.replicaSets | where array_length(replicaSets) < 2 | project name=name, id=id, tags=tags, param1=strcat('replicaSetLocation:', replicaSets[0].location)",
+            "graph": "resources | where type == 'microsoft.aad/domainservices' | extend replicaSets = properties.replicaSets | extend compliant = array_length(replicaSets) < 2 | project id=id, compliant",
             "guid": "0dd4e625-9c4b-4a56-b54a-4357bac12761",
             "link": "https://learn.microsoft.com/entra/identity/domain-services/overview",
             "service": "Entra",
@@ -11086,6 +11097,23 @@
         "name": "WAF checklist",
         "timestamp": "October 01, 2024"
     },
+    "categories": [
+        {
+            "name": "Reliability"
+        },
+        {
+            "name": "Security"
+        },
+        {
+            "name": "Cost"
+        },
+        {
+            "name": "Operations"
+        },
+        {
+            "name": "Performance"
+        }
+    ],
     "severities": [
         {
             "name": "High"
