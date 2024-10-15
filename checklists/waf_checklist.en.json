@@ -2578,7 +2578,7 @@
             "checklist": "Container Apps Review",
             "guid": "af416482-663c-4ed6-b195-b44c7068e09c",
             "link": "https://learn.microsoft.com/azure/reliability/reliability-azure-container-apps?tabs=azure-cli#availability-zone-support",
-            "graph": "resources | where type =~ 'Microsoft.App/managedEnvironments' | project name, resourceGroup, location, zoneRedundancy = tolower(tostring(properties.zoneRedundant)) | extend Compliance = iff(zoneRedundancy == 'true', true, false)",
+            "graph": "resources | where type =~ 'Microsoft.App/managedEnvironments' | project name, resourceGroup, location, zoneRedundancy = tolower(tostring(properties.zoneRedundant)) | extend Compliance = iff(zoneRedundancy == 'true', 1, 0)",
             "service": "Container Apps",
             "severity": "High",
             "text": "Leverage Availability Zones if regionally applicable",
@@ -2589,7 +2589,7 @@
             "checklist": "Container Apps Review",
             "guid": "95bc80ec-6499-4d14-a7d2-7d296b1d8abc",
             "link": "https://learn.microsoft.com/azure/reliability/reliability-azure-container-apps?tabs=azure-cli#set-up-zone-redundancy-in-your-container-apps-environment",
-            "graph": "resources | where type =~ 'Microsoft.App/containerApps' | project name, resourceGroup, location, minReplicas = toint(properties.template.scale.minReplicas), maxReplicas = toint(properties.template.scale.maxReplicas) | extend Compliance = iff(minReplicas >= 1, true, false)",
+            "graph": "resources | where type =~ 'Microsoft.App/containerApps' | project name, resourceGroup, location, minReplicas = toint(properties.template.scale.minReplicas), maxReplicas = toint(properties.template.scale.maxReplicas) | extend Compliance = iff(minReplicas >= 1, 1, 0)",
             "service": "Container Apps",
             "severity": "High",
             "text": "Use more than one replica and enable Zone Redundancy.",
@@ -3799,7 +3799,7 @@
             "arm-service": "Microsoft.ServiceBus/namespaces",
             "checklist": "Service Bus Review Checklist",
             "description": "Microsoft Entra ID provides superior security and ease of use over shared access signatures (SAS). With Microsoft Entra ID, there’s no need to store the tokens in your code and risk potential security vulnerabilities. We recommend that you use Microsoft Entra ID with your Azure Service Bus applications when possible.",
-            "graph": "Resources | where type =~ 'microsoft.servicebus/namespaces' | extend compliant = iif(properties.disableLocalAuth == 'false', 'No', 'Yes') | project id, compliant",
+            "graph": "Resources | where type =~ 'microsoft.servicebus/namespaces' | extend compliant = iif(properties.disableLocalAuth == 'false', '0', '1') | project id, compliant",
             "guid": "786d60f9-6c96-4ad8-a55d-04c2b39c986b",
             "link": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/disable-local-authentication",
             "service": "Service Bus",
@@ -3933,7 +3933,7 @@
             "arm-service": "Microsoft.Storage/storageAccounts",
             "checklist": "Azure Storage Review Checklist",
             "description": "Newly created storage accounts are created using the ARM deployment model, so that RBAC, auditing etc. are all enabled. Ensure that there are no old storage accounts with classic deployment model in a subscription",
-            "graph": "Resources |where type == 'microsoft.classicstorage/storageaccounts' |summarize Count=count() |extend  compliant = iff(Count == 0, 1,0) |project compliant",
+            "graph": "",
             "guid": "30e37c3e-2971-41b2-963c-eee079b598de",
             "link": "https://learn.microsoft.com/azure/virtual-machines/migration-classic-resource-manager-overview#migration-of-storage-accounts",
             "service": "Azure Storage",
@@ -4896,7 +4896,7 @@
         },
         {
             "checklist": "Azure Landing Zone Review",
-            "graph": "Resources | where type =~ 'Microsoft.Network/publicIPAddresses' and sku.tier =~ 'Regional' | where isempty(zones) or array_length(zones) <= 1 | extend az = case(isempty(zones), 'Non-zonal', array_length(zones) <= 1, strcat('Zonal (', strcat_array(zones, ','), ')'), zones) | project name, id, tags, param1 = strcat('sku: ', sku.name), param2 = strcat('availabilityZone: ', az)",
+            "graph": "Resources | where type =~ 'Microsoft.Network/publicIPAddresses' and sku.tier =~ 'Regional' | where isempty(zones) or array_length(zones) <= 1 | extend compliant = case(isempty(zones), 'Non-zonal', array_length(zones) <= 1, strcat('Zonal (', strcat_array(zones, ','), ')'), zones) | distinct id, compliant",
             "guid": "0c47f486-656d-4699-8c30-edef5b8a93c4",
             "link": "https://learn.microsoft.com/azure/virtual-network/ip-services/public-ip-addresses#availability-zone",
             "service": "Public IP Addresses",
@@ -6388,6 +6388,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
+            "graph":"resources | where type =~ 'microsoft.web/serverfarms' or type =~ 'microsoft.web/sites' | extend compliant = iif(properties == 'zoneRedundant', '1', '0') | project id, compliant",
             "guid": "b32e1aa1-4813-4602-88fe-27ca2891f421",
             "link": "https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/app-service-web-app/zone-redundant?source=recommendations",
             "service": "App Services",
@@ -6409,6 +6410,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
+            "graph":"resources | where type =~ 'microsoft.web/sites' | extend compliant = iif(properties == 'availabilityState', '1', '0') | project id, compliant",
             "guid": "a7e2e6c2-491f-4fa4-a82b-521d0bc3b202",
             "link": "https://learn.microsoft.com/en-us/azure/reliability/migrate-app-service",
             "service": "App Services",
@@ -6440,6 +6442,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
+            "graph":"resources | where type =~ 'microsoft.web/sites' | extend compliant = iif(properties == 'availabilityState', '1', '0') | project id, compliant",
             "guid": "e68cd0ec-afc6-4bd8-a27f-7860ad9a0db2",
             "link": "https://learn.microsoft.com/en-us/azure/architecture/framework/services/compute/azure-app-service/reliability",
             "service": "App Services",
@@ -6470,6 +6473,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
+            "graph":"resources| where type =~ 'microsoft.web/sites'| extend compliant = iif(properties == 'siteConfig.alwaysOn', '1', '0') | project id, compliant",
             "guid": "c7b5f3d1-0569-4fd2-9f32-c0b64e9c0c5e",
             "link": "https://learn.microsoft.com/en-us/azure/azure-functions/dedicated-plan#always-on",
             "service": "App Services",
@@ -6480,6 +6484,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
+            "graph":"resources| where type =~ 'microsoft.web/sites'| extend compliant = iif(properties == 'siteConfig.healthCheckPath', '1', '0') | project id, compliant",
             "guid": "a3b4d5f6-758c-4f9d-9e1a-d7c6b7e8f9ab",
             "link": "https://learn.microsoft.com/en-us/azure/app-service/monitor-instances-health-check",
             "service": "App Services",
@@ -6490,6 +6495,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
+            "graph":"resources| where type =~ 'microsoft.insights/webtests'| extend compliant = iif(properties == 'Configuration.WebTest, properties.ValidationRules.ExpectedHttpStatusCode', '1', '0') | project id, compliant",
             "guid": "c7d3e5f9-a19c-4833-8ca6-1dcb0128e129",
             "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/app/availability-overview",
             "service": "App Services",
@@ -6721,6 +6727,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
+            "graph":"resources | where type == 'microsoft.web/sites/config' | extend cors = tostring(properties.siteConfig.cors.allowedOrigins) | where isnotempty(cors) | where cors contains '*' | project id, name, cors",
             "description": "Do not use wildcards in your CORS configuration, as this allows all origins to access the service (thereby defeating the purpose of CORS). Specifically only allow the origins that you expect to be able to access the service.",
             "guid": "68266abc-a264-4f9a-89ae-d9c55d04c2c3",
             "link": "https://learn.microsoft.com/azure/app-service/app-service-web-tutorial-rest-api",
@@ -6755,6 +6762,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
+            "graph":"resources | where type =~ 'microsoft.network/virtualnetworks'| extend compliant = iif(properties == 'enableDdosProtection', '1', '0') | project id, compliant",
             "description": "Azure provides DDoS Basic protection on its network, which can be improved with intelligent DDoS Standard capabilities which learns about normal traffic patterns and can detect unusual behavior. DDoS Standard applies to a Virtual Network so it must be configured for the network resource in front of the app, such as Application Gateway or an NVA.",
             "guid": "223ece80-b123-4071-a541-6415833ea3ad",
             "link": "https://learn.microsoft.com/azure/ddos-protection/ddos-protection-overview",
