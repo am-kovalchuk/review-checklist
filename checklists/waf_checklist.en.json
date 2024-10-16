@@ -14,7 +14,7 @@
         },
         {
             "arm-service": "microsoft.containerregistry/registries",
-            "graph":"",
+            "graph": "",
             "checklist": "Azure Container Registry Security Review",
             "description": "Enable audit compliance visibility by enabling Azure Policy for Azure Container Registry",
             "guid": "d503547c-d447-4e82-9128-a7100f1cac6d",
@@ -352,7 +352,7 @@
             "waf": "Security"
         },
         {
-            "arm-service": "microsoft.network/applicationGateways",
+            "arm-service": "microsoft.network/applicationGateways",            
             "checklist": "Azure Application Delivery Networking",
             "graph": "resources | where type == 'microsoft.network/applicationgateways' | project id, compliant = properties.sku.name in ('Standard_v2', 'WAF_v2') | project id,compliant",
             "guid": "553585a6-abe0-11ed-afa1-0242ac120002",
@@ -385,7 +385,7 @@
             "waf": "Security"
         },
         {
-            "arm-service": "microsoft.network/applicationGateways",
+            "arm-service": "microsoft.network/applicationGateways",            
             "checklist": "Azure Application Delivery Networking",
             "graph": "resources | where type=='microsoft.network/applicationgateways' | extend subnetId = tostring(properties.gatewayIPConfigurations[0].properties.subnet.id) | project id, subnetId | join (resources | where type=='microsoft.network/virtualnetworks' | project id,subnets=properties.subnets | mv-expand subnets | mv-expand subnets.properties.addressPrefixes | project id, subnetId = tostring(subnets.id), prefix1 = subnets.properties.addressPrefix, prefix2 = subnets.properties.addressPrefixes | mv-expand prefix2 | extend prefix = iff(isnotnull(prefix1), prefix1, prefix2) | extend subnetPrefixLength = split(prefix, '/')[1])on subnetId | extend compliant = (subnetPrefixLength <= 24 or subnetPrefixLength == 64) | distinct id,compliant",
             "guid": "dfc50f87-3800-424c-937b-ed5f186e7c15",
@@ -398,6 +398,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways' or type =~ 'microsoft.network/virtualnetworks/subnets'| extend skuName = tostring(properties.sku.name), backendAddresses = properties.backendAddressPools, nsgId = properties.privateLinkConfigurations| where skuName == 'WAF_v2' or skuName == 'Standard_v2' or nsgId contains 'partnerNVA'| mv-expand backendAddresses| project name, skuName, backendAddresses, nsgId| where backendAddresses != ''",
             "checklist": "Azure Application Delivery Networking",
             "description": "Administration of reverse proxies in general and WAF in particular is closer to the application than to networking, so they belong in the same subscription as the app. Centralizing the Application Gateway and WAF in the connectivity subscription might be OK if it is managed by one single team.",
             "guid": "48b662d6-d15f-4512-a654-98f6dfe237de",
@@ -410,6 +411,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/publicipaddresses'| project name, location, ddosProtectionPlanId = properties.ddosSettings.ddosProtectionPlan.id, protectionMode = properties.ddosSettings.protectionMode",
             "checklist": "Azure Application Delivery Networking",
             "guid": "f109e1f3-c79b-4f14-82de-6b5c22314d08",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/ag-overview",
@@ -525,6 +527,7 @@
         {
             "ammp": true,
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend wafConfig = parse_json(properties).webApplicationFirewallConfiguration| where wafConfig.enabled == true and wafConfig.firewallMode == 'Detection'| project ApplicationGatewayName = name, WAFEnabled = wafConfig.enabled, WAFMode = wafConfig.firewallMode, WAFRuleSetType = wafConfig.ruleSetType, WAFRuleSetVersion = wafConfig.ruleSetVersion| extend compliant = iif(properties == 'status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure Application Delivery Networking",
             "guid": "a4dd86d3-5ffa-408c-b660-cce073d085b8",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/best-practices#tune-your-waf",
@@ -536,6 +539,7 @@
         {
             "ammp": true,
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend wafConfig = parse_json(properties).webApplicationFirewallConfiguration| where wafConfig.enabled == true and wafConfig.firewallMode == 'Prevention'| project ApplicationGatewayName = name, WAFEnabled = wafConfig.enabled, WAFMode = wafConfig.firewallMode",
             "checklist": "Azure Application Delivery Networking",
             "guid": "baf8e317-2397-4d49-b3d1-0dcc16d8778d",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/policy-overview?source=recommendations",
@@ -546,6 +550,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgatewaywebapplicationfirewallpolicies'| project name, location, fileUploadLimitInMb = properties.policySettings.fileUploadLimitInMb",
             "checklist": "Azure Application Delivery Networking",
             "guid": "43fae595-8a32-4299-a69e-0f32c454dcc9",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/rate-limiting-overview",
@@ -556,6 +561,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgatewaywebapplicationfirewallpolicies'| project name, location, fileUploadLimitInMb = properties.policySettings.fileUploadLimitInMb",
             "checklist": "Azure Application Delivery Networking",
             "guid": "041e0ad8-7b12-4694-a0b7-a0e25ee2470f",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/rate-limiting-overview#rate-limiting-details",
@@ -566,6 +572,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend backendAddressPools = todynamic(properties.backendAddressPools)| mv-expand backendAddressPools| extend backendAddresses = todynamic(backendAddressPools.properties.backendAddresses)| mv-expand backendAddresses| project name, location, backendAddress = backendAddresses.ipAddress, backendAddressPoolName = tostring(backendAddressPools.name)| summarize TrafficStatus = count() by name, location, backendAddressPoolName",
             "checklist": "Azure Application Delivery Networking",
             "guid": "99937189-ff78-492a-b9ca-18d828d82b37",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/best-practices#geo-filtering-best-practices",
@@ -576,6 +583,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend wafConfig = parse_json(properties).webApplicationFirewallConfiguration| where location == 'unknown'| project ApplicationGatewayName = name, WAFEnabled = wafConfig.enabled, WAFMode = wafConfig.firewallMode",
             "checklist": "Azure Application Delivery Networking",
             "guid": "349a15c1-52f4-4319-9078-3895d95ecafd",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/geomatch-custom-rules",
@@ -586,6 +594,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type == 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure Application Delivery Networking",
             "guid": "6c19dfd5-a61c-436c-9001-491b9b3d0228",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/best-practices#use-the-latest-ruleset-versions",
@@ -596,6 +605,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = parse_json(properties).webApplicationFirewallConfiguration",
             "checklist": "Azure Application Delivery Networking",
             "guid": "f84106a2-2e9e-42ac-add6-d3416ecfed53",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/best-practices#add-diagnostic-settings-to-save-your-wafs-logs",
@@ -606,6 +616,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.insights/diagnosticsettings'| extend settings = parse_json(properties.logs)| mv-expand settings| where settings.enabled == true and settings.category == 'ApplicationGatewayFirewallLog'| project resourceName = name, logStatus = settings.enabled, logCategory = settings.category",
             "checklist": "Azure Application Delivery Networking",
             "guid": "92664c60-47e3-4591-8b1b-8d557656e686",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/best-practices#send-logs-to-microsoft-sentinel",
@@ -616,6 +627,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, WAFEnabled = properties.wafConfig.enabled, WAFMode = properties.wafConfig.firewallMode",
             "checklist": "Azure Application Delivery Networking",
             "guid": "ba0e9b26-6e0d-4ec8-8541-023c00afd5b7",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/best-practices#define-your-waf-configuration-as-code",
@@ -626,6 +638,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, policyConfig = properties.loadDistributionPolicies",
             "checklist": "Azure Application Delivery Networking",
             "guid": "f17ec301-8470-4afd-aabc-c1fdfe47dcc0",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/policy-overview",
@@ -636,6 +649,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, incomingTraffic = properties.probe.id",
             "checklist": "Azure Application Delivery Networking",
             "guid": "d4eb8667-f8cb-4cdd-94e6-2f967ba98f88",
             "link": "https://learn.microsoft.com/azure/virtual-wan/scenario-secured-hub-app-gateway",
@@ -646,6 +660,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, policyConfig = properties.path,properties.protocol,properties.port",
             "checklist": "Azure Application Delivery Networking",
             "guid": "a66f0fd8-2ca4-422e-8df3-235148127ca2",
             "link": "https://learn.microsoft.com/azure/application-gateway/ssl-overview",
@@ -656,6 +671,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, WAFEnabled = properties.wafConfig.enabled, WAFMode = properties.wafConfig.firewallMode",
             "checklist": "Azure Application Delivery Networking",
             "guid": "3dba65cb-834d-44d8-a3ca-a6aa2f1587be",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/overview",
@@ -666,6 +682,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.web/sites'| extend compliant = iif(properties.name == 'bw-document-intelligence', '1', '0') | project id, compliant, httpToHttpsRedirect = properties.siteConfig.http20Enabled",
             "checklist": "Azure Application Delivery Networking",
             "guid": "0158fcb6-0bc1-4687-832f-cc7c359c22d2",
             "link": "https://learn.microsoft.com/azure/application-gateway/redirect-overview",
@@ -676,6 +693,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "grahp": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, backendHttpSettingsCollection = properties.backendHttpSettingsCollection",
             "checklist": "Azure Application Delivery Networking",
             "guid": "bb697864-1b4c-43af-8667-90cc69aaed5f",
             "link": "https://learn.microsoft.com/azure/application-gateway/how-application-gateway-works#modifications-to-the-request",
@@ -686,6 +704,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'Microsoft.Network/applicationGateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, connectionDrainingEnabled = backendHttpSettingsCollection.properties.connectionDraining.enabled, connectionDrainingDrainTimeoutInSec = backendHttpSettingsCollection.properties.connectionDraining.drainTimeoutInSec",
             "checklist": "Azure Application Delivery Networking",
             "guid": "ff353ad8-15fb-4ae8-9fc5-a85a36d36a35",
             "link": "https://learn.microsoft.com/azure/application-gateway/configuration-http-settings",
@@ -696,6 +715,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, customErrorConfigurations = properties.customErrorConfigurations",
             "checklist": "Azure Application Delivery Networking",
             "guid": "c8741f03-45a4-4183-a6b8-139e0773b8b5",
             "link": "https://learn.microsoft.com/azure/application-gateway/custom-error",
@@ -706,6 +726,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, requestRoutingRules = properties.requestRoutingRules, httpListener = properties.httpListener.id",
             "checklist": "Azure Application Delivery Networking",
             "guid": "f850d46f-f5d7-4b17-b48c-a780741402e1",
             "link": "https://learn.microsoft.com/azure/application-gateway/rewrite-http-headers-url",
@@ -716,6 +737,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/frontdoors'| extend compliant = iif(properties == 'status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure Application Delivery Networking",
             "guid": "eadc3164-4a0f-461c-85f1-1a372c04dfd1",
             "link": "https://learn.microsoft.com/azure/frontdoor/front-door-overview",
@@ -726,6 +748,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/loadbalancers'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, loadBalancingRules = properties.loadBalancingRules",
             "checklist": "Azure Application Delivery Networking",
             "guid": "29dcc19f-a8fa-4c35-8281-290577538793",
             "link": "https://learn.microsoft.com/azure/load-balancer/load-balancer-overview",
@@ -736,6 +759,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, routingRules = properties.urlPathMaps",
             "checklist": "Azure Application Delivery Networking",
             "guid": "276898c1-af5e-4819-9e8e-049c7801ab9d",
             "link": "https://learn.microsoft.com/azure/application-gateway/multiple-site-overview",
@@ -746,6 +770,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, sslCertificates = properties.sslCertificates",
             "checklist": "Azure Application Delivery Networking",
             "guid": "5fe365b6-58e8-47ed-a8cf-5163850380a2",
             "link": "https://learn.microsoft.com/azure/application-gateway/create-ssl-portal",
@@ -756,6 +781,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.web/sites'| extend compliant = iif(properties.name == 'bw-document-intelligence', '1', '0') | project id, compliant, WebSocketStatus = properties.siteConfig.webSocketsEnabled, Http2Status = properties.siteConfig.http20Enabled",
             "checklist": "Azure Application Delivery Networking",
             "guid": "fa64b4dd-35c2-4047-ac5c-45dfbf8b0db9",
             "link": "https://learn.microsoft.com/azure/application-gateway/application-gateway-websocket",
@@ -938,7 +964,7 @@
         {
             "arm-service": "Microsoft.Web/sites",
             "checklist": "Azure Function Review",
-            "graph":"resources | where type =~ 'microsoft.web/sites' and kind =~ 'functionapp' | extend isIsolated = tostring(properties.siteConfig.reserved) | where isIsolated == true | extend aseId = tostring(properties.appServiceEnvironmentId) | join kind=inner (resources| where type =~ 'microsoft.web/hostingEnvironments' | project aseId = id, aseName = name, aseSku = sku) on $left.aseId == $right.aseId | extend compliant = ( aseSku.tier =~ 'Isolated' and aseSku.name startswith 'I3') | distinct id, compliant",
+            "graph": "resources | where type =~ 'microsoft.web/sites' and kind =~ 'functionapp' | extend isIsolated = tostring(properties.siteConfig.reserved) | where isIsolated == true | extend aseId = tostring(properties.appServiceEnvironmentId) | join kind=inner (resources| where type =~ 'microsoft.web/hostingEnvironments' | project aseId = id, aseName = name, aseSku = sku) on $left.aseId == $right.aseId | extend compliant = ( aseSku.tier =~ 'Isolated' and aseSku.name startswith 'I3') | distinct id, compliant",
             "guid": "47a0aae0-d8a0-43b1-9791-e934dee3754c",
             "link": "https://learn.microsoft.com/en-us/azure/app-service/environment/intro",
             "service": "Azure Functions",
@@ -960,8 +986,7 @@
         {
             "arm-service": "Microsoft.Web/sites",
             "checklist": "Azure Function Review",
-            "graph":"(resources | where type =~ 'microsoft.web/sites' and kind =~ 'functionapp'| project functionAppName = name, resourceGroup, location, storageAccount = tostring(properties.storageAccount)) | join kind=leftouter (resources | where type =~ 'microsoft.storage/storageaccounts' | project storageAccountName = name, resourceGroup) on $left.storageAccount == $right.storageAccountName | extend compliant = iff(isnotempty(storageAccount), '1', '0') | functionAppName,storageAccountName, compliant",
-
+            "graph": "(resources | where type =~ 'microsoft.web/sites' and kind =~ 'functionapp'| project functionAppName = name, resourceGroup, location, storageAccount = tostring(properties.storageAccount)) | join kind=leftouter (resources | where type =~ 'microsoft.storage/storageaccounts' | project storageAccountName = name, resourceGroup) on $left.storageAccount == $right.storageAccountName | extend compliant = iff(isnotempty(storageAccount), '1', '0') | functionAppName,storageAccountName, compliant",
             "guid": "40a325c2-7c0e-49e6-86d8-c273b4dc21ba",
             "link": "https://learn.microsoft.com/en-us/azure/azure-functions/storage-considerations?tabs=azure-cli#shared-storage-accounts",
             "service": "Azure Functions",
@@ -972,7 +997,7 @@
         {
             "arm-service": "Microsoft.Web/sites",
             "checklist": "Azure Function Review",
-            "graph":"resources | where type =~ 'microsoft.web/sites' and kind =~ 'functionapp' | extend compliant = tostring(properties.siteConfig.appSettings['SCM_SOURCE_CONTROL'] =~'GitHub' or properties.siteConfig.appSettings['SCM_SOURCE_CONTROL']=~ 'Azure DevOps') | distinct id, compliant",
+            "graph": "resources | where type =~ 'microsoft.web/sites' and kind =~ 'functionapp' | extend compliant = tostring(properties.siteConfig.appSettings['SCM_SOURCE_CONTROL'] =~'GitHub' or properties.siteConfig.appSettings['SCM_SOURCE_CONTROL']=~ 'Azure DevOps') | distinct id, compliant",
             "guid": "bb42650c-257d-4cb0-822a-131138b8e6f0",
             "link": "https://learn.microsoft.com/en-us/training/modules/deploy-azure-functions/",
             "service": "Azure Functions",
@@ -993,7 +1018,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
-            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend compliant = tostring(properties.isZoneRedundant == 'true')  | distinct id, compliant",
+            "graph": "resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend compliant = tostring(properties.isZoneRedundant == 'true')  | distinct id, compliant",
             "guid": "de39ac0e-7c28-4dc9-9565-7202bff4564b",
             "link": "https://learn.microsoft.com/azure/cosmos-db/high-availability#slas",
             "service": "CosmosDB",
@@ -1004,7 +1029,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
-            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend replicationCount = array_length(properties.replication) | extend isProduction = properties.tags['Environment'] =~ 'production' | extend compliant = replicationCount > 1 and isProduction | distinct id, compliant",
+            "graph": "resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend replicationCount = array_length(properties.replication) | extend isProduction = properties.tags['Environment'] =~ 'production' | extend compliant = replicationCount > 1 and isProduction | distinct id, compliant",
             "guid": "0d934a34-8b26-43e7-bd60-513a3649906e",
             "link": "https://learn.microsoft.com/azure/cosmos-db/high-availability#replica-outages",
             "service": "CosmosDB",
@@ -1015,7 +1040,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
-            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend multiRegionWriteEnabled = tostring(properties.enableMultipleWriteLocations) | extend compliant = multiRegionWriteEnabled == 'true' | distinct id, compliant ",
+            "graph": "resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend multiRegionWriteEnabled = tostring(properties.enableMultipleWriteLocations) | extend compliant = multiRegionWriteEnabled == 'true' | distinct id, compliant ",
             "description": "Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe",
             "guid": "bad38ead-53cc-47de-8d8a-aab3571449ab",
             "link": "https://learn.microsoft.com/azure/cosmos-db/high-availability#multiple-write-regions",
@@ -1027,7 +1052,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
-            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend regionCount = array_length(properties.locations) | extend multiRegionWriteEnabled = tostring(properties.enableMultipleWriteLocations) | extend compliant = (regionCount > 1 and multiRegionWriteEnabled == 'true') | distinct id, compliant ",
+            "graph": "resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend regionCount = array_length(properties.locations) | extend multiRegionWriteEnabled = tostring(properties.enableMultipleWriteLocations) | extend compliant = (regionCount > 1 and multiRegionWriteEnabled == 'true') | distinct id, compliant ",
             "description": "Span Cosmos account across two or more regions with multi-region writes",
             "guid": "8153d89f-89dc-47b3-9be2-b1a27f7b9e91",
             "link": "https://learn.microsoft.com/azure/cosmos-db/high-availability#slas",
@@ -1050,7 +1075,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
-            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend serviceManagedFailoverEnabled = tostring(properties.enableAutomaticFailover) | extend compliant = serviceManagedFailoverEnabled == 'true' | distinct id, compliant",
+            "graph": "resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend serviceManagedFailoverEnabled = tostring(properties.enableAutomaticFailover) | extend compliant = serviceManagedFailoverEnabled == 'true' | distinct id, compliant",
             "description": "Maintain business continuity during regional outages. Azure Cosmos DB supports service-managed failover during a regional outage. During a regional outage, Azure Cosmos DB continues to maintain its latency, availability, consistency, and throughput SLAs. To help make sure that your entire application is highly available, Azure Cosmos DB offers a manual failover API to simulate a regional outage. By using this API, you can carry out regular business continuity drills.",
             "guid": "a47e4d1e-bb79-43f9-bf87-69e1032b72fe",
             "link": "https://learn.microsoft.com/azure/cosmos-db/how-to-manage-database-account#automatic-failover",
@@ -1062,7 +1087,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
-            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend automaticBackupsEnabled = tostring(properties.enableAutomaticBackup) | extend compliant = automaticBackupsEnabled == 'true' | distinct id, compliant",
+            "graph": "resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend automaticBackupsEnabled = tostring(properties.enableAutomaticBackup) | extend compliant = automaticBackupsEnabled == 'true' | distinct id, compliant",
             "description": "Azure Cosmos DB automatically takes backups of your data at regular intervals. The automatic backups are taken without affecting the performance or availability of the database operations. All the backups are stored separately in a storage service.",
             "guid": "3499c9c1-133d-42f7-a4b1-a5bd06ff1a90",
             "link": "https://learn.microsoft.com/azure/cosmos-db/online-backup-and-restore",
@@ -1075,7 +1100,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
-            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend periodicBackupEnabled = tostring(properties.enablePeriodicBackup) | extend compliant = periodicBackupEnabled == 'true' | distinct id, compliant",
+            "graph": "resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend periodicBackupEnabled = tostring(properties.enablePeriodicBackup) | extend compliant = periodicBackupEnabled == 'true' | distinct id, compliant",
             "description": "This mode is the default backup mode for all existing accounts. In this mode, backup is taken at a periodic interval and the data is restored by creating a request with the support team. In this mode, you configure a backup interval and retention for your account. The maximum retention period extends to a month. The minimum backup interval can be one hour.",
             "guid": "a6eb33f6-005c-4d92-9286-7655672d6121",
             "link": "https://learn.microsoft.com/azure/cosmos-db/periodic-backup-restore-introduction",
@@ -1088,7 +1113,7 @@
         {
             "arm-service": "microsoft.documentdb/databaseAccounts",
             "checklist": "CosmosDB Review Checklist",
-            "graph":"resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend continuousBackupEnabled = tostring(properties.enableContinuousBackup) | extend compliant = continuousBackupEnabled == 'true' | distinct id, compliant",
+            "graph": "resources | where type =~ 'microsoft.documentdb/databaseaccounts' | extend continuousBackupEnabled = tostring(properties.enableContinuousBackup) | extend compliant = continuousBackupEnabled == 'true' | distinct id, compliant",
             "description": "Continous 7 day retention and 30 day retention backups. Azure Cosmos DB performs data backup in the background without consuming any extra provisioned throughput (RUs) or affecting the performance and availability of your database. Continuous backups are taken in every region where the account exists.",
             "guid": "d43918a8-cd28-49be-b6b1-7cb8245461e1",
             "link": "https://learn.microsoft.com/azure/cosmos-db/continuous-backup-restore-introduction",
@@ -3701,6 +3726,7 @@
         },
         {
             "arm-service": "Microsoft.DataFactory/datafactories",
+            "graph": "resources| where type =~ 'microsoft.datafactory/factories'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure Data Factory Review Checklist",
             "guid": "ab91932c-9fc9-4d1b-a881-37f5e6c0cb9e",
             "link": "https://github.com/Azure/fta-resiliencyplaybooks/blob/main/paas-foundations-playbooks-ADF_v1.docx",
@@ -3711,6 +3737,7 @@
         },
         {
             "arm-service": "Microsoft.DataFactory/datafactories",
+            "graph": "resources| where type =~ 'microsoft.datafactory/factories/pipelines'| extend compliant = iif(properties == 'status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure Data Factory Review Checklist",
             "guid": "e503547c-d447-4e82-9138-a7200f1cac6d",
             "link": "https://learn.microsoft.com/azure/architecture/example-scenario/analytics/pipelines-disaster-recovery",
@@ -3721,6 +3748,7 @@
         },
         {
             "arm-service": "Microsoft.DataFactory/datafactories",
+            "graph": "resources| where type =~ 'microsoft.visualstudio/connectedservice/github' or type =~ 'microsoft.visualstudio/connectedservice/azuredevops'| extend compliant = iif(properties == 'status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure Data Factory Review Checklist",
             "guid": "9ef1d6e8-32e5-42e3-911c-818b1a0bc511",
             "link": "https://learn.microsoft.com/azure/data-factory/source-control",
@@ -3731,6 +3759,7 @@
         },
         {
             "arm-service": "Microsoft.DataFactory/datafactories",
+            "graph": "resources| where type =~ 'microsoft.datafactory/factories/integrationruntimes'| extend compliant = iif(properties == 'status', '1', '0') | project id, compliant",
             "checklist": "Azure Data Factory Review Checklist",
             "guid": "e43a18a9-cd29-49cf-b7b1-7db8255562f2",
             "link": "https://learn.microsoft.com/azure/architecture/example-scenario/analytics/pipelines-disaster-recovery",
@@ -3741,6 +3770,7 @@
         },
         {
             "arm-service": "Microsoft.DataFactory/datafactories",
+            "graph": "resources| where type =~ 'microsoft.network/virtualnetworks'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure Data Factory Review Checklist",
             "guid": "aee4563a-fd83-4393-98b2-62d6dc5f512a",
             "link": "https://learn.microsoft.com/azure/architecture/example-scenario/analytics/pipelines-disaster-recovery",
@@ -3751,6 +3781,7 @@
         },
         {
             "arm-service": "Microsoft.DataFactory/datafactories",
+            "graph": "resources| where type =~ 'microsoft.datafactory/factories'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure Data Factory Review Checklist",
             "description": "If your ADF Pipelines use Key Vault you don't have to do anything to replicate Key Vault. Key Vault is a managed service and Microsoft takes care of it for you",
             "guid": "25498f6d-bad3-47da-a43b-c6ce1d7aa9b2",
@@ -4007,7 +4038,7 @@
             "checklist": "Azure Storage Review Checklist",
             "description": "Prevents accidental deletion of a storage account, by forcing the user to first remove the deletion lock, prior to deletion",
             "graph": "Resources | where type == 'microsoft.storage/storageaccounts' | extend storageAccountId = tostring(id) | project storageAccountId, storageAccountName = name, resourceGroup | join kind=inner (Resources| where type == 'Microsoft.Authorization/locks'| extend lockResourceId = tostring(properties.scope)| project lockResourceId, lockName = name, lockType = properties.level ) on $left.storageAccountId == $right.lockResourceId | project storageAccountName, resourceGroup, lockName, lockType",
-       "guid": "5398e6de-d227-4dd1-92b0-6c21d7999a64",
+            "guid": "5398e6de-d227-4dd1-92b0-6c21d7999a64",
             "link": "https://learn.microsoft.com/azure/storage/common/lock-account-resource",
             "service": "Azure Storage",
             "severity": "High",
@@ -4041,7 +4072,7 @@
             "arm-service": "Microsoft.Storage/storageAccounts",
             "checklist": "Azure Storage Review Checklist",
             "description": "When configuring a custom domain (hostname) on a storage account, check whether you need TLS/HTTPS; if so, you might have to put Azure CDN in front of your storage account.",
-            "graph":"resources | where type == 'microsoft.storage/storageaccounts' | extend customDomainName = tostring(properties.customDomain.name) |extend compliant = isnull(customDomainName) | distinct id, compliant",
+            "graph": "resources | where type == 'microsoft.storage/storageaccounts' | extend customDomainName = tostring(properties.customDomain.name) |extend compliant = isnull(customDomainName) | distinct id, compliant",
             "guid": "79b588de-fc49-472c-b3cd-21bf77036e5e",
             "link": "https://learn.microsoft.com/azure/storage/blobs/storage-custom-domain-name",
             "service": "Azure Storage",
@@ -4053,7 +4084,7 @@
             "arm-service": "Microsoft.Storage/storageAccounts",
             "checklist": "Azure Storage Review Checklist",
             "description": "Requiring HTTPS when a client uses a SAS token to access blob data helps to minimize the risk of credential loss.",
-            "graph":"Resources | where type == 'microsoft.storage/storageaccounts' | extend httpsOnly = tostring(properties.supportsHttpsTrafficOnly) |extend compliant = isnull(httpsOnly) | distinct id, compliant ",
+            "graph": "Resources | where type == 'microsoft.storage/storageaccounts' | extend httpsOnly = tostring(properties.supportsHttpsTrafficOnly) |extend compliant = isnull(httpsOnly) | distinct id, compliant ",
             "guid": "6b4bed3d-5035-447c-8347-dc56028a71ff",
             "link": "https://learn.microsoft.com/azure/storage/common/storage-sas-overview",
             "service": "Azure Storage",
@@ -4133,7 +4164,7 @@
             "arm-service": "Microsoft.Storage/storageAccounts",
             "checklist": "Azure Storage Review Checklist",
             "description": "A key expiration policy enables you to set a reminder for the rotation of the account access keys. The reminder is displayed if the specified interval has elapsed and the keys have not yet been rotated.",
-            "graph":"Resources | where type == 'microsoft.storage/storageaccounts' | extend compliant = isnotnull(properties.keyPolicy.keyExpirationPeriodInDays) | distinct id, compliant",
+            "graph": "Resources | where type == 'microsoft.storage/storageaccounts' | extend compliant = isnotnull(properties.keyPolicy.keyExpirationPeriodInDays) | distinct id, compliant",
             "guid": "a22a4956-e7a8-4dc4-a20e-27c3e29711b1",
             "link": "https://learn.microsoft.com/azure/storage/common/storage-account-keys-manage?tabs=azure-portal#create-a-key-expiration-policy",
             "service": "Azure Storage",
@@ -4145,7 +4176,7 @@
             "arm-service": "Microsoft.Storage/storageAccounts",
             "checklist": "Azure Storage Review Checklist",
             "description": "A SAS expiration policy specifies a recommended interval over which the SAS is valid. SAS expiration policies apply to a service SAS or an account SAS. When a user generates service SAS or an account SAS with a validity interval that is larger than the recommended interval, they'll see a warning.",
-            "graph":"Resources | where type == 'microsoft.storage/storageaccounts' | extend compliant = isnotnull(properties.sasPolicy.expirationPeriod) | distinct id, compliant",
+            "graph": "Resources | where type == 'microsoft.storage/storageaccounts' | extend compliant = isnotnull(properties.sasPolicy.expirationPeriod) | distinct id, compliant",
             "guid": "352beee0-79b5-488d-bfc4-972cd3cd21bf",
             "link": "https://learn.microsoft.com/azure/storage/common/sas-expiration-policy",
             "service": "Azure Storage",
@@ -4157,7 +4188,7 @@
             "arm-service": "Microsoft.Storage/storageAccounts",
             "checklist": "Azure Storage Review Checklist",
             "description": "Stored access policies give you the option to revoke permissions for a service SAS without having to regenerate the storage account keys. ",
-            "graph":"Resources | where type == 'microsoft.storage/storageaccounts' | mv-expand blobServices = properties.blobServices | where blobServices.name == 'default' | mv-expand containers = blobServices.properties.containers | extend compliant = array_length(containers.properties.leasePolicy) > 0 | distinct id, compliant",
+            "graph": "Resources | where type == 'microsoft.storage/storageaccounts' | mv-expand blobServices = properties.blobServices | where blobServices.name == 'default' | mv-expand containers = blobServices.properties.containers | extend compliant = array_length(containers.properties.leasePolicy) > 0 | distinct id, compliant",
             "guid": "77036e5e-6b4b-4ed3-b503-547c1347dc56",
             "link": "https://learn.microsoft.com/rest/api/storageservices/define-stored-access-policy",
             "service": "Azure Storage",
@@ -4179,7 +4210,7 @@
             "arm-service": "Microsoft.Storage/storageAccounts",
             "checklist": "Azure Storage Review Checklist",
             "description": "Ideally, your application should be using a managed identity to authenticate to Azure Storage. If that is not possible, consider having the storage credential (connection string, storage account key, SAS, service principal credential) in Azure KeyVault or an equivalent service.",
-            "graph":"Resources | where type == 'microsoft.keyvault/vaults' | extend keyVaultUri = properties.vaultUri | join kind=inner (     Resources     | where type == 'microsoft.keyvault/vaults/secrets'     | project vaultId = id, secretName = name ) on $left.id == $right.vaultId | project keyVaultUri, secretName ",
+            "graph": "Resources | where type == 'microsoft.keyvault/vaults' | extend keyVaultUri = properties.vaultUri | join kind=inner (     Resources     | where type == 'microsoft.keyvault/vaults/secrets'     | project vaultId = id, secretName = name ) on $left.id == $right.vaultId | project keyVaultUri, secretName ",
             "guid": "11cc57b4-a4b1-4410-b439-58a8c2289b3d",
             "link": "https://learn.microsoft.com/azure/architecture/framework/security/design-storage-keys",
             "service": "Azure Storage",
@@ -4349,7 +4380,7 @@
         {
             "arm-service": "Microsoft.Storage/storageAccounts",
             "checklist": "Azure Storage Review Checklist",
-            "graph":"resources | where type == 'microsoft.storage/storageaccounts' | extend blobProperties = properties['blobRestoreStatus'] | mv-expand blobServices = properties.blobServices | extend compliant = tostring(blobServices.properties.deleteRetentionPolicy.enabled) | distinct id, compliant,",
+            "graph": "resources | where type == 'microsoft.storage/storageaccounts' | extend blobProperties = properties['blobRestoreStatus'] | mv-expand blobServices = properties.blobServices | extend compliant = tostring(blobServices.properties.deleteRetentionPolicy.enabled) | distinct id, compliant,",
             "guid": "a274faa1-abfe-49d5-9d04-c3c4919cb1b3",
             "link": "https://learn.microsoft.com/azure/storage/blobs/soft-delete-blob-enable?tabs=azure-portal",
             "service": "Azure Storage",
@@ -4521,7 +4552,7 @@
         {
             "checklist": "Azure Landing Zone Review",
             "guid": "70c15989-c726-42c7-b0d3-24b7375b9201",
-            "graph":"resources | where type =~ 'microsoft.aad/tenants' | summarize tenantCount = count() | extend compliant = tenantCount == 1 | distinct tenantCount, compliant",
+            "graph": "resources | where type =~ 'microsoft.aad/tenants' | summarize tenantCount = count() | extend compliant = tenantCount == 1 | distinct tenantCount, compliant",
             "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/multi-tenant/considerations-recommendations",
             "service": "Entra",
             "severity": "Medium",
@@ -4532,7 +4563,7 @@
         {
             "checklist": "Azure Landing Zone Review",
             "guid": "6309957b-821a-43d1-b9d9-7fcf1802b747",
-            "graph":"resources | where type =~ 'microsoft.aad/tenants' | extend automationApproach = tostring(properties.automationApproach) | extend compliant = automationApproach == 'multi-tenant' | distinct id, compliant",
+            "graph": "resources | where type =~ 'microsoft.aad/tenants' | extend automationApproach = tostring(properties.automationApproach) | extend compliant = automationApproach == 'multi-tenant' | distinct id, compliant",
             "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/multi-tenant/automation",
             "service": "Entra",
             "severity": "Low",
@@ -4573,7 +4604,7 @@
         {
             "checklist": "Azure Landing Zone Review",
             "guid": "12e7f983-f630-4472-8dd6-9c5b5c2622f5",
-            "graph":"resources | where type =~ 'microsoft.aad/users' | extend authType = tostring(properties.accountEnabled) | extend compliant = authType == 'true' and not(tostring(properties.userType) == 'Guest') | distinct id, compliant",
+            "graph": "resources | where type =~ 'microsoft.aad/users' | extend authType = tostring(properties.accountEnabled) | extend compliant = authType == 'true' and not(tostring(properties.userType) == 'Guest') | distinct id, compliant",
             "link": "https://learn.microsoft.com/azure/active-directory/roles/security-planning#identify-microsoft-accounts-in-administrative-roles-that-need-to-be-switched-to-work-or-school-accounts",
             "service": "Entra",
             "severity": "Medium",
@@ -5588,6 +5619,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
+            "graph": "resources| where type =~ 'microsoft.network/virtualnetworks'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, serviceEndpoints = properties.serviceEndpoints",
             "checklist": "Azure Landing Zone Review",
             "guid": "d301d6e8-72e5-42e3-911c-c58b5a4b1511",
             "link": "https://learn.microsoft.com/azure/virtual-network/vnet-integration-for-azure-services",
@@ -6389,7 +6421,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
-            "graph":"resources | where type =~ 'microsoft.web/serverfarms' or type =~ 'microsoft.web/sites' | extend compliant = iif(properties == 'zoneRedundant', '1', '0') | project id, compliant",
+            "graph": "resources | where type =~ 'microsoft.web/serverfarms' or type =~ 'microsoft.web/sites' | extend compliant = iif(properties == 'zoneRedundant', '1', '0') | project id, compliant",
             "guid": "b32e1aa1-4813-4602-88fe-27ca2891f421",
             "link": "https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/app-service-web-app/zone-redundant?source=recommendations",
             "service": "App Services",
@@ -6411,7 +6443,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
-            "graph":"resources | where type =~ 'microsoft.web/sites' | extend compliant = iif(properties == 'availabilityState', '1', '0') | project id, compliant",
+            "graph": "resources | where type =~ 'microsoft.web/sites' | extend compliant = iif(properties == 'availabilityState', '1', '0') | project id, compliant",
             "guid": "a7e2e6c2-491f-4fa4-a82b-521d0bc3b202",
             "link": "https://learn.microsoft.com/en-us/azure/reliability/migrate-app-service",
             "service": "App Services",
@@ -6443,7 +6475,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
-            "graph":"resources | where type =~ 'microsoft.web/sites' | extend compliant = iif(properties == 'availabilityState', '1', '0') | project id, compliant",
+            "graph": "resources | where type =~ 'microsoft.web/sites' | extend compliant = iif(properties == 'availabilityState', '1', '0') | project id, compliant",
             "guid": "e68cd0ec-afc6-4bd8-a27f-7860ad9a0db2",
             "link": "https://learn.microsoft.com/en-us/azure/architecture/framework/services/compute/azure-app-service/reliability",
             "service": "App Services",
@@ -6474,7 +6506,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
-            "graph":"resources| where type =~ 'microsoft.web/sites'| extend compliant = iif(properties == 'siteConfig.alwaysOn', '1', '0') | project id, compliant",
+            "graph": "resources| where type =~ 'microsoft.web/sites'| extend compliant = iif(properties == 'siteConfig.alwaysOn', '1', '0') | project id, compliant",
             "guid": "c7b5f3d1-0569-4fd2-9f32-c0b64e9c0c5e",
             "link": "https://learn.microsoft.com/en-us/azure/azure-functions/dedicated-plan#always-on",
             "service": "App Services",
@@ -6485,7 +6517,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
-            "graph":"resources| where type =~ 'microsoft.web/sites'| extend compliant = iif(properties == 'siteConfig.healthCheckPath', '1', '0') | project id, compliant",
+            "graph": "resources| where type =~ 'microsoft.web/sites'| extend compliant = iif(properties == 'siteConfig.healthCheckPath', '1', '0') | project id, compliant",
             "guid": "a3b4d5f6-758c-4f9d-9e1a-d7c6b7e8f9ab",
             "link": "https://learn.microsoft.com/en-us/azure/app-service/monitor-instances-health-check",
             "service": "App Services",
@@ -6496,7 +6528,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
-            "graph":"resources| where type =~ 'microsoft.insights/webtests'| extend compliant = iif(properties == 'Configuration.WebTest, properties.ValidationRules.ExpectedHttpStatusCode', '1', '0') | project id, compliant",
+            "graph": "resources| where type =~ 'microsoft.insights/webtests'| extend compliant = iif(properties == 'Configuration.WebTest, properties.ValidationRules.ExpectedHttpStatusCode', '1', '0') | project id, compliant",
             "guid": "c7d3e5f9-a19c-4833-8ca6-1dcb0128e129",
             "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/app/availability-overview",
             "service": "App Services",
@@ -6539,7 +6571,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
-            "graph":"resources | where type == 'microsoft.web/sites'| extend tlsCert = properties.hostNameSslStates| mv-expand tlsCert| where tostring(tlsCert.sslState) == 'SniEnabled' // Look for SNI-enabled TLS bindings| extend certThumbprint = tostring(tlsCert.thumbprint), certSource = tostring(tlsCert.toUpdate['certificateSource'])| where certSource == 'AzureKeyVault'  // Ensure the certificate is coming from Key Vault| project appServiceName = name, resourceGroup, location, certThumbprint, certSource",
+            "graph": "resources | where type == 'microsoft.web/sites'| extend tlsCert = properties.hostNameSslStates| mv-expand tlsCert| where tostring(tlsCert.sslState) == 'SniEnabled' // Look for SNI-enabled TLS bindings| extend certThumbprint = tostring(tlsCert.thumbprint), certSource = tostring(tlsCert.toUpdate['certificateSource'])| where certSource == 'AzureKeyVault'  // Ensure the certificate is coming from Key Vault| project appServiceName = name, resourceGroup, location, certThumbprint, certSource",
             "description": "Store the App Service TLS certificate in Key Vault.",
             "guid": "f8d39fda-4776-4831-9c11-5775c2ea55b4",
             "link": "https://learn.microsoft.com/azure/app-service/configure-ssl-certificate",
@@ -6729,7 +6761,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
-            "graph":"resources | where type == 'microsoft.web/sites/config' | extend cors = tostring(properties.siteConfig.cors.allowedOrigins) | where isnotempty(cors) | where cors contains '*' | project id, name, cors",
+            "graph": "resources | where type == 'microsoft.web/sites/config' | extend cors = tostring(properties.siteConfig.cors.allowedOrigins) | where isnotempty(cors) | where cors contains '*' | project id, name, cors",
             "description": "Do not use wildcards in your CORS configuration, as this allows all origins to access the service (thereby defeating the purpose of CORS). Specifically only allow the origins that you expect to be able to access the service.",
             "guid": "68266abc-a264-4f9a-89ae-d9c55d04c2c3",
             "link": "https://learn.microsoft.com/azure/app-service/app-service-web-tutorial-rest-api",
@@ -6764,7 +6796,7 @@
         {
             "arm-service": "microsoft.web/sites",
             "checklist": "Azure App Service Review",
-            "graph":"resources | where type =~ 'microsoft.network/virtualnetworks'| extend compliant = iif(properties == 'enableDdosProtection', '1', '0') | project id, compliant",
+            "graph": "resources | where type =~ 'microsoft.network/virtualnetworks'| extend compliant = iif(properties == 'enableDdosProtection', '1', '0') | project id, compliant",
             "description": "Azure provides DDoS Basic protection on its network, which can be improved with intelligent DDoS Standard capabilities which learns about normal traffic patterns and can detect unusual behavior. DDoS Standard applies to a Virtual Network so it must be configured for the network resource in front of the app, such as Application Gateway or an NVA.",
             "guid": "223ece80-b123-4071-a541-6415833ea3ad",
             "link": "https://learn.microsoft.com/azure/ddos-protection/ddos-protection-overview",
@@ -6871,7 +6903,7 @@
             "arm-service": "Microsoft.Compute/virtualMachineScaleSets",
             "checklist": "Resiliency Review",
             "description": "Automatic instance repairs ensure that unhealthy instances are promptly identified and replaced, maintaining a set of healthy instances within your scale set.",
-            "graph":"resources | where type == 'Microsoft.Compute/virtualMachineScaleSets' | extend autoRepairsEnabled = properties.automaticRepairsPolicy.enabled | extend compliant = iff(autoRepairsEnabled == true, 1, 0) | project id, compliant",
+            "graph": "resources | where type == 'Microsoft.Compute/virtualMachineScaleSets' | extend autoRepairsEnabled = properties.automaticRepairsPolicy.enabled | extend compliant = iff(autoRepairsEnabled == true, 1, 0) | project id, compliant",
             "guid": "7e13c105-675c-41e9-95b4-59837ff7ae7c",
             "link": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-automatic-instance-repairs",
             "service": "VMSS",
@@ -6883,7 +6915,7 @@
             "arm-service": "Microsoft.Compute/virtualMachines",
             "checklist": "Resiliency Review",
             "description": "Ensure that Azure Backup is utilized appropriately to meet your organization's resiliency requirements for Azure virtual machines (VMs).",
-            "graph":"resources | where type == 'microsoft.recoveryservices/vaults/backupFabrics/protectionContainers/protectedItems' | where properties.workloadType == 'VM' | extend vmId = tostring(properties.sourceResourceId) | summarize isBackedUp = count() by vmId | join kind=leftouter (resources | where type == 'microsoft.compute/virtualMachines' | project id, name) on $left.vmId == $right.id | extend compliant = iff(isnotempty(vmId), 1, 0) | project id, compliant",
+            "graph": "resources | where type == 'microsoft.recoveryservices/vaults/backupFabrics/protectionContainers/protectedItems' | where properties.workloadType == 'VM' | extend vmId = tostring(properties.sourceResourceId) | summarize isBackedUp = count() by vmId | join kind=leftouter (resources | where type == 'microsoft.compute/virtualMachines' | project id, name) on $left.vmId == $right.id | extend compliant = iff(isnotempty(vmId), 1, 0) | project id, compliant",
             "guid": "4d874a74-8b66-42d6-b150-512a66498f6d",
             "link": "https://learn.microsoft.com/azure/backup/backup-azure-vms-introduction",
             "service": "VM",
@@ -6894,7 +6926,7 @@
         {
             "arm-service": "Microsoft.Compute/virtualMachines",
             "checklist": "Resiliency Review",
-            "graph":"resources | where type == 'microsoft.compute/virtualMachines' | extend osDiskType = properties.storageProfile.osDisk.managedDisk.storageAccountType | extend dataDisks = properties.storageProfile.dataDisks | mv-expand dataDisks | extend dataDiskType = tostring(dataDisks.managedDisk.storageAccountType) | extend compliant = iff((osDiskType in ('Premium_LRS', 'UltraSSD_LRS') or dataDiskType in ('Premium_LRS', 'UltraSSD_LRS')), 1, 0) | distinct id, compliant",
+            "graph": "resources | where type == 'microsoft.compute/virtualMachines' | extend osDiskType = properties.storageProfile.osDisk.managedDisk.storageAccountType | extend dataDisks = properties.storageProfile.dataDisks | mv-expand dataDisks | extend dataDiskType = tostring(dataDisks.managedDisk.storageAccountType) | extend compliant = iff((osDiskType in ('Premium_LRS', 'UltraSSD_LRS') or dataDiskType in ('Premium_LRS', 'UltraSSD_LRS')), 1, 0) | distinct id, compliant",
             "description": "Single Instance VMs using Premium SSD or Ultra Disk for all Operating System Disks and Data Disks are guaranteed to have Virtual Machine Connectivity of at least 99.9%",
             "guid": "8052d88e-79d1-47b7-9b22-a5a67e7a8ed4",
             "link": "https://learn.microsoft.com/azure/virtual-machines/disks-types",
@@ -6906,7 +6938,7 @@
         {
             "arm-service": "Microsoft.Compute/virtualMachines",
             "checklist": "Resiliency Review",
-            "graph":"resources | where type == 'microsoft.compute/virtualMachines' | extend osDiskManaged = isnotempty(properties.storageProfile.osDisk.managedDisk.id) | extend dataDisks = properties.storageProfile.dataDisks | mv-expand dataDisks | extend dataDiskManaged = isnotempty(dataDisks.managedDisk.id) | summarize dataDisksManaged = iff(min(dataDiskManaged) == 1, true, false) by id, name, osDiskManaged | extend compliant = iff(osDiskManaged and dataDisksManaged, 1, 0) | project id, compliant",
+            "graph": "resources | where type == 'microsoft.compute/virtualMachines' | extend osDiskManaged = isnotempty(properties.storageProfile.osDisk.managedDisk.id) | extend dataDisks = properties.storageProfile.dataDisks | mv-expand dataDisks | extend dataDiskManaged = isnotempty(dataDisks.managedDisk.id) | summarize dataDisksManaged = iff(min(dataDiskManaged) == 1, true, false) by id, name, osDiskManaged | extend compliant = iff(osDiskManaged and dataDisksManaged, 1, 0) | project id, compliant",
             "description": "Azure automatically replicates managed disks within a region to ensure data durability and protect against single-point failures.",
             "guid": "b31e38c3-f298-412b-8363-cffe179b599d",
             "link": "https://learn.microsoft.com/azure/virtual-machines/managed-disks-overview",
@@ -6919,7 +6951,7 @@
             "arm-service": "Microsoft.Compute/virtualMachines",
             "checklist": "Resiliency Review",
             "description": "Temporary disks are intended for short-term storage of non-persistent data such as page files, swap files, or SQL Server tempdb. Storing persistent data on temporary disks can lead to data loss during maintenance events or VM redeployment.",
-            "graph":"resources | where type == 'microsoft.compute/virtualMachines' | extend osDiskManaged = isnotempty(properties.storageProfile.osDisk.managedDisk.id) | extend dataDisks = properties.storageProfile.dataDisks | mv-expand dataDisks | extend dataDiskManaged = isnotempty(dataDisks.managedDisk.id) | summarize allManagedDisks = iff(min(osDiskManaged == true and dataDiskManaged == true), 1, 0) by id, name | extend compliant = iff(allManagedDisks == 1, 1, 0) | project id, compliant",
+            "graph": "resources | where type == 'microsoft.compute/virtualMachines' | extend osDiskManaged = isnotempty(properties.storageProfile.osDisk.managedDisk.id) | extend dataDisks = properties.storageProfile.dataDisks | mv-expand dataDisks | extend dataDiskManaged = isnotempty(dataDisks.managedDisk.id) | summarize allManagedDisks = iff(min(osDiskManaged == true and dataDiskManaged == true), 1, 0) by id, name | extend compliant = iff(allManagedDisks == 1, 1, 0) | project id, compliant",
             "guid": "e0d5973c-d4ce-432c-8881-37f6f7c4c0d4",
             "link": "https://learn.microsoft.com/azure/virtual-machines/managed-disks-overview#temporary-disk",
             "service": "VM",
@@ -6931,7 +6963,7 @@
             "arm-service": "Microsoft.Compute/virtualMachines",
             "checklist": "Resiliency Review",
             "description": "Co-locate your compute, storage, networking, and data resources across an availability zone, and replicate this arrangement in other availability zones.",
-            "graph":"resources | where type == 'microsoft.compute/virtualMachines' | extend availabilityZone = iff(isnotempty(zones), 'In Availability Zone', 'No Availability Zone') | extend compliant = iff(isnotempty(zones), 1, 0) | project id, compliant",
+            "graph": "resources | where type == 'microsoft.compute/virtualMachines' | extend availabilityZone = iff(isnotempty(zones), 'In Availability Zone', 'No Availability Zone') | extend compliant = iff(isnotempty(zones), 1, 0) | project id, compliant",
             "guid": "e514548d-2447-4ec6-9138-b8200f1ce16e",
             "link": "https://learn.microsoft.com/azure/reliability/availability-zones-overview",
             "service": "VM",
@@ -6943,7 +6975,7 @@
             "arm-service": "Microsoft.Compute/virtualMachines",
             "checklist": "Resiliency Review",
             "description": "Use at least two VMs in Availability Sets to isolate VMs on different fault and update domains.",
-            "graph":"resources | where type == 'microsoft.compute/virtualMachines' | extend availabilityZones = isnotempty(zones) | extend availabilitySetId = properties.availabilitySet.id | extend compliant = iff(availabilityZones or isnotempty(availabilitySetId), 1, 0) | project id, compliant",
+            "graph": "resources | where type == 'microsoft.compute/virtualMachines' | extend availabilityZones = isnotempty(zones) | extend availabilitySetId = properties.availabilitySet.id | extend compliant = iff(availabilityZones or isnotempty(availabilitySetId), 1, 0) | project id, compliant",
             "guid": "5a785d6f-e96c-496a-b884-4cf3b2b38c88",
             "link": "https://learn.microsoft.com/azure/virtual-machines/availability-set-overview",
             "service": "VM",
@@ -6966,7 +6998,7 @@
             "arm-service": "Microsoft.Compute/virtualMachines",
             "checklist": "Resiliency Review",
             "description": "Azure Site Recovery enables you to achieve low RTO (Recovery Time Objective) for your Azure and hybrid VMs by providing continuous replication and failover capabilities.",
-            "graph":"resources | where type == 'microsoft.recoveryservices/vaults' | join kind=inner (resources | where type == 'microsoft.compute/virtualMachines' | extend asrProtection = properties.protectionStatus, vaultId = tostring(properties.recoveryServicesVaultId)) on $left.name == $right.vaultId | extend compliant = iff(asrProtection == 'Protected', 1, 0) | project vmId = id, compliant",
+            "graph": "resources | where type == 'microsoft.recoveryservices/vaults' | join kind=inner (resources | where type == 'microsoft.compute/virtualMachines' | extend asrProtection = properties.protectionStatus, vaultId = tostring(properties.recoveryServicesVaultId)) on $left.name == $right.vaultId | extend compliant = iff(asrProtection == 'Protected', 1, 0) | project vmId = id, compliant",
             "guid": "2a6bcca2-b5fe-4a1e-af3d-d95d48c7c891",
             "link": "https://learn.microsoft.com/azure/site-recovery/site-recovery-overview",
             "service": "VM",
@@ -6978,7 +7010,7 @@
             "arm-service": "Microsoft.Compute/virtualMachines",
             "checklist": "Resiliency Review",
             "description": "By using Capacity Reservations, you can effectively manage capacity for critical workloads, ensuring resource availability in specified regions.",
-            "graph":"resources | where type == 'microsoft.compute/virtualMachines' | where isnotempty(properties.capacityReservationGroupId) | extend compliant = iff(isnotempty(properties.capacityReservationGroupId), 1, 0) | project id, compliant",
+            "graph": "resources | where type == 'microsoft.compute/virtualMachines' | where isnotempty(properties.capacityReservationGroupId) | extend compliant = iff(isnotempty(properties.capacityReservationGroupId), 1, 0) | project id, compliant",
             "guid": "bd7bb012-f7b9-45e0-9e15-8e3ea3992c2d",
             "link": "https://learn.microsoft.com/azure/virtual-machines/capacity-reservation-overview",
             "service": "VM",
@@ -7054,6 +7086,7 @@
         },
         {
             "arm-service": "Microsoft.RecoveryServices/vaults",
+            "graph": "resources| where type =~ 'microsoft.dataprotection/backupvaults'| extend compliant = iif(properties == 'status', '1', '0') | project id, compliant",
             "checklist": "Resiliency Review",
             "description": "Azure Backup enhanced soft delete provides critical protection against ransomware attacks by retaining deleted backups, enabling recovery from potential ransomware encryption or deletion.",
             "guid": "b44be3b1-a27f-48b9-b91b-e1038df03a82",
@@ -7065,6 +7098,7 @@
         },
         {
             "arm-service": "Microsoft.RecoveryServices/vaults",
+            "graph": "resources| where type =~ 'microsoft.recoveryservices/vaults'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Resiliency Review",
             "description": "Azure Backup's multi-user authorization enables fine-grained control over user access to backup resources, allowing you to restrict privileges and ensure proper authentication and authorization for backup operations.",
             "guid": "2cd463cb-bbc8-4ac2-a9eb-c92a43da1dae",
@@ -7076,6 +7110,7 @@
         },
         {
             "arm-service": "Microsoft.RecoveryServices/vaults",
+            "graph": "resources| where type =~ 'microsoft.dataprotection/backupvaults'| extend compliant = iif(properties == 'status', '1', '0') | project id, compliant, properties",
             "checklist": "Resiliency Review",
             "description": "Azure Immutable Storage provides an additional layer of security by ensuring that backup data stored in the vault cannot be modified or deleted for a specified retention period. This helps safeguard your backups from ransomware attacks that may attempt to compromise or manipulate your backup data.",
             "guid": "2cc88147-0607-4c1c-aa0e-614658dd458e",
@@ -8881,6 +8916,7 @@
         },
         {
             "arm-service": "Microsoft.RecoveryServices/vaults",
+            "graph": "resources| where type =~ 'microsoft.sql/managedinstances'| extend compliant = iif(properties == 'status', '1', '0') | project id, compliant",
             "checklist": "Cost Optimization Checklist",
             "guid": "45901365-d38e-443f-abcb-d868266abca2",
             "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/multi-tenant/automation",
@@ -8901,6 +8937,7 @@
         },
         {
             "arm-service": "Microsoft.RecoveryServices/vaults",
+            "graph": "resources| where type =~ 'microsoft.recoveryservices/vaults'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, softDeleteFeatureState = properties.securitySettings.softDeleteSettings.softDeleteState, enhancedSecurityState = properties.securitySettings.softDeleteSettings.enhancedSecurityState",
             "checklist": "Cost Optimization Checklist",
             "guid": "69bad37a-ad53-4cc7-ae1d-76667357c449",
             "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/azure-billing-microsoft-customer-agreement#design-recommendations",
@@ -8911,6 +8948,7 @@
         },
         {
             "arm-service": "Microsoft.Insights/components",
+            "graph": "resources| where type =~ 'microsoft.insights/components'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Cost Optimization Checklist",
             "guid": "674b5ed8-5a85-49c7-933b-e2a1a27b765a",
             "link": "https://learn.microsoft.com/azure/cost-management-billing/manage/direct-ea-administration#manage-notification-contacts",
@@ -8922,6 +8960,7 @@
         },
         {
             "arm-service": "Microsoft.Insights/components",
+            "graph": "resources| where type =~ 'microsoft.insights/diagnosticsettings'| extend compliant = iif(properties == 'status', '1', '0') | project id, compliant",
             "checklist": "Cost Optimization Checklist",
             "guid": "91be1f38-8ef3-494c-8bd4-63cbbac75819",
             "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/azure-billing-enterprise-agreement#design-considerations",
@@ -9027,6 +9066,7 @@
         },
         {
             "arm-service": "Microsoft.Sql/servers",
+            "graph": "resources| where type =~ 'microsoft.sql/servers' or type =~ 'microsoft.sql/servers/databases'| extend compliant = iif(properties.status == 'Online', '1', '0') | project id, compliant, properties",
             "checklist": "Cost Optimization Checklist",
             "guid": "d7bb012f-7b95-4e06-b158-e2ea3992c2de",
             "link": "https://learn.microsoft.com/azure/active-directory/app-proxy/application-proxy",
@@ -9067,6 +9107,7 @@
         },
         {
             "arm-service": "Microsoft.RecoveryServices/vaults",
+            "graph": "resources| where type =~ 'microsoft.recoveryservices/vaults'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Cost Optimization Checklist",
             "guid": "44be3b1a-27f8-4b9e-a1be-1f38df03a822",
             "link": "https://learn.microsoft.com/azure/azure-monitor/logs/data-retention-archive?tabs=portal-1%2Cportal-2#how-retention-and-archiving-work",
@@ -10297,6 +10338,7 @@
         },
         {
             "arm-service": "Microsoft.ApiManagement/service",
+            "graph": "resources| where type =~ 'microsoft.insights/datacollectionrules'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure API Management Review",
             "guid": "a7d0840a-c8c4-4e83-adec-5ca578eb4049",
             "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-use-azure-monitor#resource-logs",
