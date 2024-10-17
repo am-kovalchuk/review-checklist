@@ -6388,6 +6388,7 @@
         },
         {
             "arm-service": "Microsoft.Storage/storageAccounts",
+            "graph": "resources| where type =~ 'microsoft.storage/storageaccounts'| extend compliant = iif(properties.supportsHttpsTrafficOnly == 'true', '1', '0') | project id, compliant, properties",
             "checklist": "Azure Landing Zone Review",
             "guid": "b03ed428-4617-4067-a787-85468b9ccf3f",
             "link": "https://learn.microsoft.com/azure/storage/common/storage-require-secure-transfer",
@@ -9408,6 +9409,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "a85b86ad-884f-48e3-9273-4b875ba18f10",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/concepts/system-message#define-additional-safety-and-behavioral-guardrails",
@@ -9418,6 +9420,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.apimanagement/service'| extend compliant = iif(properties == 'Status', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "d4391898-cd28-48be-b6b1-7cb8245451e1",
             "link": "https://github.com/Azure-Samples/AI-Gateway",
@@ -9428,6 +9431,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts' and kind == 'OpenAI'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "aed3453a-ec72-4392-97a1-52d6cc5e4029",
             "link": "https://techcommunity.microsoft.com/t5/fasttrack-for-azure/azure-openai-insights-monitoring-ai-with-confidence/ba-p/4026850",
@@ -9438,6 +9442,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.insights/activitylogalerts'| extend compliant = iif(properties == 'Status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "697cb391-ed16-4b2d-886f-0a0241addde6",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/monitoring#set-up-alerts",
@@ -9448,6 +9453,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.insights/components'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "8a477cde-b486-41bc-9bc1-0ae66e25d4d5",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/monitoring",
@@ -9458,6 +9464,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'endpoints.Token, callRateLimitMethod, succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "a3aec2c4-e243-46b0-936c-b45e17960eee",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/monitoring",
@@ -9468,6 +9475,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'Microsoft.OpenAI/accounts'| extend compliant = iif(properties == 'status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "fbdf4cc2-eec4-4d76-8c31-d25ffbb46a39",
             "link": "https://techcommunity.microsoft.com/t5/apps-on-azure-blog/build-an-enterprise-ready-azure-openai-solution-with-azure-api/ba-p/3907562",
@@ -9478,6 +9486,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts' and kind == 'OpenAI'| extend compliant = iif(properties.provisioningState == 'Succeeded ', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "3af30ed3-2947-498b-8178-a2c5a46ceb54",
             "link": "https://github.com/Azure-Samples/openai-enterprise-iac",
@@ -9488,6 +9497,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "4350d092-d234-4292-a752-8537a551c5bf",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/managed-identity",
@@ -9498,6 +9508,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "4e4f1854-287d-45cd-a126-cc031af5b1fc",
             "link": "https://learn.microsoft.com/azure/machine-learning/prompt-flow/how-to-bulk-test-evaluate-flow?view=azureml-api-2",
@@ -9508,6 +9519,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "68889535-e327-4897-b31b-67d67be5962a",
             "link": "https://learn.microsoft.com/azure/architecture/ai-ml/architecture/baseline-openai-e2e-chat#azure-openai---performance-efficiency",
@@ -9518,6 +9530,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "cd288bed-6b17-4cb8-8454-51e1aed3453a",
             "link": "https://learn.microsoft.com/azure/ai-services/content-safety/overview",
@@ -9528,6 +9541,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "1193846d-697c-4b39-8ed1-6b2d186f0a02",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/latency#system-level-throughput",
@@ -9538,6 +9552,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.botservice/botservices' or type =~ 'microsoft.media/mediaservices/liveevents'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "41addde6-8a47-47cd-bb48-61bc3bc10ae6",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/latency#improve-performance",
@@ -9548,6 +9563,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.documentdb/databaseaccounts'| extend compliant = iif(properties == 'Status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "6e25d4d5-a3ae-4c2c-9e24-36b0336cb45e",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/latency#batching",
@@ -9558,6 +9574,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.documentdb/databaseaccounts'| extend compliant = iif(properties == 'Status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "5bda4332-4f24-4811-9331-82ba51752694",
             "link": "https://github.com/Azure/azure-openai-benchmark/",
@@ -9568,6 +9585,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts' and kind == 'OpenAI'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "4008ae7d-7e47-4432-96d8-bdcf55bce619",
             "link": "https://techcommunity.microsoft.com/t5/fasttrack-for-azure/optimizing-azure-openai-a-guide-to-limits-quotas-and-best/ba-p/4076268",
@@ -9578,6 +9596,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts' and kind == 'OpenAI'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "e8a13f98-8794-424d-9267-86d60b96c97b",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/concepts/models",
@@ -9588,6 +9607,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts' and kind == 'OpenAI'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "e9951904-8384-45c9-a6cb-2912156a1147",
             "link": "https://github.com/Azure/azure-openai-benchmark/",
@@ -9598,6 +9618,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "5e39f541-accc-4d97-a376-bcdb3750ab2a",
             "link": "https://learn.microsoft.com/azure/architecture/ai-ml/architecture/baseline-openai-e2e-chat#azure-openai---reliability",
@@ -9608,6 +9629,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts' and kind == 'OpenAI'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "b039da6d-55d7-4c89-8adb-107d5325af62",
             "link": "https://learn.microsoft.com/azure/architecture/ai-ml/architecture/baseline-openai-e2e-chat#azure-openai---reliability",
@@ -9618,6 +9640,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "5ca44e46-85e2-4223-ace8-bb12308ca5f1",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/quota?tabs=rest#introduction-to-quota",
@@ -9628,6 +9651,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.healthcareapis/services'| extend compliant = iif(properties == 'Status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "ec723923-7a15-42d6-ac5e-402925387e5c",
             "link": "https://www.microsoft.com/research/project/guidelines-for-human-ai-interaction/",
@@ -9638,6 +9662,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "7f154e3a-a369-4282-ae7e-316183687a04",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/business-continuity-disaster-recovery",
@@ -9648,6 +9673,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.sql/servers/databases' or type =~ 'microsoft.storage/storageaccounts' or type =~ 'microsoft.dbformysql/flexibleservers' or type =~ 'microsoft.dataprotection/backupvaults'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "77a1f893-5bda-4433-84f2-4811633182ba",
             "link": "https://learn.microsoft.com/azure/backup/backup-overview",
@@ -9658,6 +9684,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.search/searchservices'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "95b96ad8-844c-4e3b-8b38-b876ba2cf204",
             "link": "https://www.microsoft.com/licensing/docs/view/Service-Level-Agreements-SLA-for-Online-Services?lang=1",
@@ -9668,6 +9695,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.security/insights'| extend compliant = iif(properties == 'Status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "99013a5d-3ce4-474d-acbd-8682a6abca2a",
             "link": "https://learn.microsoft.com/purview/purview",
@@ -9678,6 +9706,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'Microsoft.Storage/storageAccounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "4fda1dbf-3dd9-45d4-ac7c-891dca1f6d56",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/use-your-data-securely",
@@ -9688,6 +9717,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.sql/servers'| extend compliant = iif(properties.publicNetworkAccess == 'Enabled', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "59ae558b-937d-4498-9e11-12dbd7ba012f",
             "link": "https://learn.microsoft.com/azure/search/search-security-overview",
@@ -9698,6 +9728,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts' and kind == 'OpenAI'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "7b94ef6e-047d-42ea-8992-b1cd6e2054b2",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/role-based-access-control",
@@ -9708,6 +9739,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.sql/servers/databases'| extend compliant = iif(properties.status == 'Online', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "9769e4a6-91e8-4838-ac93-6667e13c0056",
             "link": "https://learn.microsoft.com/azure/security/fundamentals/data-encryption-best-practices",
@@ -9718,6 +9750,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.azurearcdata/sqlserverinstances' or type =~ 'microsoft.operationalinsights/workspaces' or type =~ 'microsoft.security/securityContacts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "74b1e945-b459-4837-be7a-d6c6d3b375a5",
             "link": "https://learn.microsoft.com/azure/defender-for-cloud/defender-for-cloud-introduction",
@@ -9738,6 +9771,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.security/policies'| extend compliant = iif(properties == 'Status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "a9c27d9c-42bb-46bd-8c69-99a246f3389a",
             "link": "https://learn.microsoft.com/azure/ai-services/content-safety/concepts/jailbreak-detection",
@@ -9748,6 +9782,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.sql/servers/databases'| extend compliant = iif(properties.status == 'Online', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "a775c6ee-95b9-46ad-a844-ce3b2b38b876",
             "link": "https://learn.microsoft.com/azure/compliance/",
@@ -9758,6 +9793,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.security/assessments'| extend compliant = iif(properties == 'Status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "ba2cf204-9901-43a5-b3ce-474dccbd8682",
             "service": "Azure OpenAI",
@@ -9785,6 +9821,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.purview/accounts'| extend compliant = iif(properties == 'Status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "2bfe4564-b0d8-434a-948b-263e6dd60512",
             "service": "Azure OpenAI",
@@ -9803,6 +9840,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.authorization/roleassignments'| extend compliant = iif(properties == 'Status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "3571449a-b805-43d8-af89-dc7b33be2a1a",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/role-based-access-control",
@@ -9813,6 +9851,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.network/privateendpoints'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "27f7b9e9-1be1-4f38-aef3-9812bd463cbb",
             "link": "https://techcommunity.microsoft.com/t5/azure-architecture-blog/azure-openai-private-endpoints-connecting-across-vnet-s/ba-p/3913325",
@@ -9823,6 +9862,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.network/azurefirewalls' or type =~ 'microsoft.network/routeTables'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "ac8ac199-ebb9-41a3-9d90-cae2cc881370",
             "service": "Azure OpenAI",
@@ -9832,6 +9872,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.network/networksecuritygroups'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "6f7c0cba-fe51-4464-add4-57e927138b82",
             "service": "Azure OpenAI",
@@ -9851,6 +9892,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.web/sites'| extend compliant = iif(properties.name == 'bw-document-intelligence', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "1102cac6-eae0-41e6-b842-e52f4721d928",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/managed-identity",
@@ -9861,6 +9903,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.network/applicationgateways' or type =~ 'microsoft.network/networkinterfaces' or type =~ 'microsoft.web/sites'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "c1b1cd52-1e54-4a29-a9de-399cfd7b28dc",
             "link": "https://techcommunity.microsoft.com/t5/azure-architecture-blog/security-best-practices-for-genai-applications-openai-in-azure/ba-p/4027885",
@@ -9871,6 +9914,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.network/networkwatchers/flowlogs'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "93555620-2bfe-4456-9b0d-834a348b263e",
             "service": "Azure OpenAI",
@@ -9880,6 +9924,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.network/networksecuritygroups'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "6dd60512-a364-498f-9dba-d38ead53cc7c",
             "service": "Azure OpenAI",
@@ -9889,6 +9934,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.ai/machinelearning'| extend compliant = iif(properties == 'status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "e1d7aaab-3571-4449-ab80-53d89f89dc7b",
             "link": "https://learn.microsoft.com/azure/azure-resource-manager/management/tag-resources?tabs=json",
@@ -9899,6 +9945,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "77036e5e-6b4b-4ed3-b503-547c1347dc56",
             "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
@@ -9909,6 +9956,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.ai/machinelearning'| extend compliant = iif(properties == 'status', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "028a71ff-e1ce-415d-b3f0-d5e772d41e36",
             "link": "https://learn.microsoft.com/azure/ai-services/diagnostic-logging",
@@ -9919,6 +9967,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "11cc57b4-a4b1-4410-b439-58a8c2289b3d",
             "link": "https://learn.microsoft.com/azure/ai-services/authentication",
@@ -9929,6 +9978,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "6b57cfc6-5546-41e1-a3e3-453a3c863964",
             "link": "https://learn.microsoft.com/azure/key-vault/general/best-practices",
@@ -9939,6 +9989,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "8b652d6c-15f5-4129-9539-8e6ded227dd1",
             "link": "https://learn.microsoft.com/azure/key-vault/general/best-practices",
@@ -9949,6 +10000,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "adfe27be-e297-401a-a352-baaab79b088d",
             "link": "https://github.com/openai/tiktoken",
@@ -9959,6 +10011,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'Microsoft.MachineLearningServices/workspaces' or type =~ 'Microsoft.CognitiveServices/accounts' or type =~ 'Microsoft.BotService/botServices'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "42b06c21-d799-49a6-96f4-389a7f42c78e",
             "link": "https://learn.microsoft.com/azure/security/develop/secure-dev-overview",
@@ -9969,6 +10022,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "78c06a73-a22a-4495-9e6a-8dc4a20e27c3",
             "link": "https://learn.microsoft.com/azure/devops/repos/security/github-advanced-security-dependency-scanning?view=azure-devops",
@@ -9989,6 +10043,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "d3cd21bf-7703-46e5-b6b4-bed3d503547c",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/manage-costs#base-series-and-codex-series-fine-tuned-models",
@@ -10069,6 +10124,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "e6436b07-36db-455f-9796-03334bdf9cc2",
             "link": "https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/how-to-control-azure-openai-models/ba-p/4146793",
@@ -10079,6 +10135,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "3418db61-2712-4650-9bb4-7a393a080327",
             "link": "https://learn.microsoft.com/azure/machine-learning/prompt-flow/concept-model-monitoring-generative-ai-evaluation-metrics?view=azureml-api-2",
@@ -10108,6 +10165,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "287d9cec-166c-4d07-8af9-b141a898a535",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/concepts/advanced-prompt-engineering?pivots=programming-language-chat-completions",
@@ -10128,6 +10186,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.machinelearningservices/workspaces/onlineendpoints'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "edb117e6-76aa-4f66-aca4-8e5a95f2223e",
             "link": "https://www.microsoft.com/haxtoolkit/guideline/encourage-granular-feedback/",
@@ -10138,6 +10197,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "d5f3547c-c346-4d81-9028-a71ffe1b9b5d",
             "link": "https://techcommunity.microsoft.com/t5/fasttrack-for-azure/optimizing-azure-openai-a-guide-to-limits-quotas-and-best/ba-p/4076268",
@@ -10148,6 +10208,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.network/loadbalancers'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "9de0d5d7-31d4-41e3-911c-817bfafbc410",
             "link": "https://github.com/Azure/aoai-apim/blob/main/README.md",
@@ -10158,6 +10219,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.network/loadbalancers'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "9de0d5d7-31d4-41e3-911c-817bfafbc411",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/fine-tuning?tabs=turbo%2Cpython-new&pivots=programming-language-studio#import-training-data-from-azure-blob-store",
@@ -10168,6 +10230,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.resources/deployments' or type =~ 'microsoft.logz/monitors'| extend compliant = iif(properties == 'planData.usageType', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "9de0d5d7-31d4-41e3-911c-817bfafbc412",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/quota?tabs=rest",
@@ -10178,6 +10241,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "9de0d5d7-31d4-41e3-911c-817bfafbc413",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/monitor-openai",
@@ -10188,6 +10252,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts' or type =~ 'microsoft.machinelearningservices/workspaces'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "9de0d5d7-31d4-41e3-911c-817bfafbc414",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/content-filters",
@@ -10198,6 +10263,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "9de0d5d7-31d4-41e3-911c-817bfafbc415",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/encrypt-data-at-rest",
@@ -10208,6 +10274,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "9de0d5d7-31d4-41e3-911c-817bfafbc416",
             "link": "https://learn.microsoft.com/azure/ai-services/content-safety/concepts/jailbreak-detection",
@@ -10218,6 +10285,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts' or type =~ 'microsoft.web/sites' or type =~ 'microsoft.network/firewallpolicies'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "9de0d5d7-31d4-41e3-911c-817bfafbc417",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/monitor-openai",
@@ -10228,6 +10296,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant",
             "checklist": "Azure OpenAI Review",
             "guid": "72d41e36-11cc-457b-9a4b-1410d43958a9",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/manage-costs",
@@ -10238,6 +10307,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.machinelearningservices/workspaces'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "72d41e36-11cc-457b-9a4b-1410d43958a1",
             "link": "https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/",
@@ -10248,6 +10318,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "72d41e36-11cc-457b-9a4b-1410d43958a2",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/manage-costs",
@@ -10258,6 +10329,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.machinelearningservices/workspaces'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "72d41e36-11cc-457b-9a4b-1410d43958a3",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/manage-costs",
@@ -10268,6 +10340,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "7f42c78e-78cb-46a2-8ad1-90916e6a8d8g",
             "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/manage-costs",
@@ -10278,6 +10351,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.cognitiveservices/accounts' and kind == 'OpenAI'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "b4861bc3-bc14-4aeb-9e66-e8d9a3aec219",
             "link": "https://learn.microsoft.com/azure/ai-services/creat e-account-bicep",
@@ -10288,6 +10362,7 @@
         },
         {
             "arm-service": "Microsoft.CognitiveServices/accounts",
+            "graph": "resources| where type =~ 'microsoft.insights/datacollectionrules'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, properties",
             "checklist": "Azure OpenAI Review",
             "guid": "2744293b-b628-4537-a551-19b08e8f5855",
             "link": "https://learn.microsoft.com/azure/architecture/guide/multitenant/service/openai",
