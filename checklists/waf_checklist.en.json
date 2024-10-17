@@ -14,7 +14,10 @@
         },
         {
             "arm-service": "microsoft.containerregistry/registries",
+<<<<<<< HEAD
             "graph": "",
+=======
+>>>>>>> fccca7a (vnet)
             "checklist": "Azure Container Registry Security Review",
             "description": "Enable audit compliance visibility by enabling Azure Policy for Azure Container Registry",
             "guid": "d503547c-d447-4e82-9128-a7100f1cac6d",
@@ -4928,7 +4931,7 @@
         },
         {
             "checklist": "Azure Landing Zone Review",
-            "graph": "Resources | where type =~ 'Microsoft.Network/publicIPAddresses' and sku.tier =~ 'Regional' | where isempty(zones) or array_length(zones) <= 1 | extend compliant = case(isempty(zones), 'Non-zonal', array_length(zones) <= 1, strcat('Zonal (', strcat_array(zones, ','), ')'), zones) | distinct id, compliant",
+            "graph": "Resources | where type =~ 'Microsoft.Network/publicIPAddresses' and sku.tier =~ 'Regional' | where isempty(zones) or array_length(zones) <= 1 | extend compliant = case(isempty(zones), '0', array_length(zones) <= 1, strcat('1 (', strcat_array(zones, ','), ')'), zones) | distinct id, compliant",
             "guid": "0c47f486-656d-4699-8c30-edef5b8a93c4",
             "link": "https://learn.microsoft.com/azure/virtual-network/ip-services/public-ip-addresses#availability-zone",
             "service": "Public IP Addresses",
