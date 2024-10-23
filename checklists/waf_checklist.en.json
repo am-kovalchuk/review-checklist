@@ -5304,7 +5304,7 @@
             "arm-service": "microsoft.network/expressRouteCircuits",
             "checklist": "Azure Landing Zone Review",
             "guid": "d581a947-69a2-4783-942e-9df3664324c8",
-            "graph": "resources | where type == 'microsoft.network/expressRouteCircuit'| extend compliant = iif(properties.sku == 'Standard','1', '0')| project id, compliant",
+            "graph": "resources | where type =~ 'microsoft.network/expressroutecircuits'| extend compliant = iif(properties.sku == 'Standard','1', '0')| project id, compliant",
             "link": "https://learn.microsoft.com/azure/expressroute/designing-for-high-availability-with-expressroute#active-active-connections",
             "service": "ExpressRoute",
             "severity": "High",
