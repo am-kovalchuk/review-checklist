@@ -638,7 +638,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
-            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, policyConfig = properties.loadDistributionPolicies",
+            "graph": "resources | where type == 'microsoft.network/applicationgateways' | extend wafPolicyId = tostring(properties.webApplicationFirewallConfiguration.webApplicationFirewallPolicy.id) | extend compliant = iff(isnotempty(wafPolicyId), '1', '0') | project id, compliant",
             "checklist": "Azure Application Delivery Networking",
             "guid": "f17ec301-8470-4afd-aabc-c1fdfe47dcc0",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/policy-overview",
@@ -660,7 +660,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
-            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, policyConfig = properties.path,properties.protocol,properties.port",
+            "graph": "resources | where type == 'microsoft.network/applicationgateways' | mv-expand httpSettings = properties.backendHttpSettingsCollection | extend protocol = tostring(httpSettings.properties.protocol) | extend compliant = iff(protocol == 'Https', '1', '0') | project id,  compliant",
             "checklist": "Azure Application Delivery Networking",
             "guid": "a66f0fd8-2ca4-422e-8df3-235148127ca2",
             "link": "https://learn.microsoft.com/azure/application-gateway/ssl-overview",
@@ -671,7 +671,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
-            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, WAFEnabled = properties.wafConfig.enabled, WAFMode = properties.wafConfig.firewallMode",
+            "graph": "resources | where type == 'microsoft.network/applicationgateways' | extend wafEnabled = tostring(properties.webApplicationFirewallConfiguration.enabled) | extend compliant = iff(wafEnabled == 'true', '1', '0') | project id, name, compliant",
             "checklist": "Azure Application Delivery Networking",
             "guid": "3dba65cb-834d-44d8-a3ca-a6aa2f1587be",
             "link": "https://learn.microsoft.com/azure/web-application-firewall/overview",
@@ -682,7 +682,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
-            "graph": "resources| where type =~ 'microsoft.web/sites'| extend compliant = iif(properties.name == 'bw-document-intelligence', '1', '0') | project id, compliant, httpToHttpsRedirect = properties.siteConfig.http20Enabled",
+            "graph": "resources | where type == 'microsoft.network/applicationgateways' | mv-expand listeners = properties.httpListeners | extend redirectConfigurationId = tostring(listeners.properties.redirectConfiguration.id) | extend compliant = iff(isnotempty(redirectConfigurationId), '1', '0') | project id, compliant",
             "checklist": "Azure Application Delivery Networking",
             "guid": "0158fcb6-0bc1-4687-832f-cc7c359c22d2",
             "link": "https://learn.microsoft.com/azure/application-gateway/redirect-overview",
@@ -693,7 +693,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
-            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, backendHttpSettingsCollection = properties.backendHttpSettingsCollection",
+            "graph": "resources | where type == 'microsoft.network/applicationgateways' | mv-expand httpSettings = properties.backendHttpSettingsCollection | extend cookieBasedAffinity = tostring(httpSettings.properties.cookieBasedAffinity) | extend compliant = iff(cookieBasedAffinity == 'Enabled', '1', '0') | project id, compliant",
             "checklist": "Azure Application Delivery Networking",
             "guid": "bb697864-1b4c-43af-8667-90cc69aaed5f",
             "link": "https://learn.microsoft.com/azure/application-gateway/how-application-gateway-works#modifications-to-the-request",
@@ -748,7 +748,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
-            "graph": "resources| where type =~ 'microsoft.network/loadbalancers'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, loadBalancingRules = properties.loadBalancingRules",
+            "graph": "resources | where type == 'microsoft.network/applicationgateways' | mv-expand httpSettings = properties.backendHttpSettingsCollection | extend protocol = tostring(httpSettings.properties.protocol) | extend compliant = iff(protocol == 'Https', '1', '0') | project id, compliant",
             "checklist": "Azure Application Delivery Networking",
             "guid": "29dcc19f-a8fa-4c35-8281-290577538793",
             "link": "https://learn.microsoft.com/azure/load-balancer/load-balancer-overview",
@@ -770,7 +770,7 @@
         },
         {
             "arm-service": "microsoft.network/applicationGateways",
-            "graph": "resources| where type =~ 'microsoft.network/applicationgateways'| extend compliant = iif(properties.provisioningState == 'Succeeded', '1', '0') | project id, compliant, sslCertificates = properties.sslCertificates",
+            "graph": "resources | where type =~ 'Microsoft.Network/applicationGateways' | mv-expand listeners = properties.httpListeners | extend compliant = iff(tostring(listeners.properties.sslCertificate.id) != '',1,0) | project id, compliant",
             "checklist": "Azure Application Delivery Networking",
             "guid": "5fe365b6-58e8-47ed-a8cf-5163850380a2",
             "link": "https://learn.microsoft.com/azure/application-gateway/create-ssl-portal",
@@ -7437,7 +7437,6 @@
             "arm-service": "Microsoft.Kusto/clusters",
             "checklist": "Azure Data Explorer Review Checklist",
             "guid": "8b9fe5c4-1049-4d40-9a82-2c3474d00f18",
-            "graph": "resources | where type =~ 'microsoft.kusto/clusters'| extend compliant = iif(tags['InfrastructureAsCode'] == 'true','1', '0')| project id, compliant",
             "link": "https://learn.microsoft.com/azure/data-explorer/devops",
             "service": "Azure Data Explorer",
             "text": "Be fully cognizant of what it takes to build a cluster from scratch. Leverage Infrastructure as a Code for your deployments",
