@@ -9889,6 +9889,7 @@
             "arm-service": "Microsoft.CognitiveServices/accounts",
             "checklist": "Azure OpenAI Review",
             "guid": "27f7b9e9-1be1-4f38-aef3-9812bd463cbb",
+            "graph":"Resources | where type == 'microsoft.cognitiveservices/accounts' | project aiName = name, aiId = id, aiKind = kind, aiResourceGroup = resourceGroup | join kind=leftouter ( Resources | where type == 'microsoft.network/privateendpoints' | mv-expand connections = properties.privateLinkServiceConnections | project peName = name, peId = id, peResourceGroup = resourceGroup, privateLinkServiceId = tostring(connections.properties.privateLinkServiceId) ) on $left.aiId == $right.privateLinkServiceId | extend compliant = iif(isnotempty(peName), true, false) | project aiName, compliant",
             "link": "https://techcommunity.microsoft.com/t5/azure-architecture-blog/azure-openai-private-endpoints-connecting-across-vnet-s/ba-p/3913325",
             "service": "Azure OpenAI",
             "severity": "High",
